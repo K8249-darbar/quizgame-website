@@ -33,8 +33,10 @@ body {
 
 body.login-page {
   position: relative;
-  overflow: hidden;
-  display: block;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: grid;
+  place-items: center;
   padding: 1rem;
 }
 
@@ -62,16 +64,8 @@ body.login-page {
 }
 
 .auth-login-shell {
-  width: min(1020px, 96%);
-  margin: 2rem auto;
-  border-radius: 24px;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: minmax(320px, 460px) 1fr;
-  border: 1px solid var(--auth-border);
-  box-shadow: 0 28px 56px rgba(10, 65, 58, 0.18);
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(5px);
+  width: min(460px, 96%);
+  margin: 0 auto;
 }
 
 .auth-card {
@@ -86,10 +80,7 @@ body.login-page {
 .login-card {
   width: 100%;
   max-width: none;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 1.6rem;
+  padding: 1.4rem;
 }
 
 .auth-kicker {
@@ -332,15 +323,8 @@ button {
 }
 
 @media (max-width: 900px) {
-  body.login-page {
-    display: grid;
-    place-items: center;
-  }
-
   .auth-login-shell {
-    width: min(520px, 100%);
-    margin: 0;
-    grid-template-columns: 1fr;
+    width: min(460px, 96%);
   }
 
   .auth-showcase {
