@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Quiz Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="auth.css" />
+  </head>
+  <body class="login-page">
+    <div class="scene-orb orb-a"></div>
+    <div class="scene-orb orb-b"></div>
+
+    <main class="auth-login-shell">
+      <section class="auth-card login-card">
+        <div class="auth-brand">
+          <span class="brand-mark">Q</span>
+          <p class="brand-text">Quiz Portal</p>
+        </div>
+
+        <p class="auth-kicker">Secure Access</p>
+        <h1>Welcome Back</h1>
+        <p class="auth-subtext">Login to manage assessments and candidate results.</p>
+
+        <form id="login-form" novalidate>
+          <label>
+            Username or Email
+            <input
+              type="text"
+              id="identifier"
+              name="identifier"
+              autocomplete="username"
+              placeholder="Enter username or email"
+              required
+            />
+          </label>
+          <label>
+            Password
+            <input
+              type="password"
+              id="password"
+              name="password"
+              autocomplete="current-password"
+              placeholder="Enter password"
+              required
+            />
+          </label>
+          <div class="meta-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="rememberMe" name="rememberMe" />
+              <span>Remember me</span>
+            </label>
+            <a class="meta-link" href="register.html">Need account?</a>
+          </div>
+          <p class="msg error" id="login-message"></p>
+          <button type="submit">Login</button>
+        </form>
+
+        <div class="auth-footer">
+          New user? <a href="register.html">Create account</a>
+        </div>
+      </section>
+    </main>
+
+    <script src="auth.js"></script>
+    <script src="login.js"></script>
+  </body>
+</html>
