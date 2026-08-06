@@ -1,0 +1,6 @@
+{
+  "name": "Computer Engineering Quiz Arena",
+  "description": "Interactive timed quiz assessment platform with real-time multiplayer, leaderboards, user authentication, quiz history, achievements, and performance statistics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

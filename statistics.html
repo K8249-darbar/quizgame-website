@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Statistics | Computer Engineering Quiz Arena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-grid"></div>
+
+    <main class="app-shell">
+      <header class="hero">
+        <div class="hero-head">
+          <div>
+            <p class="hero-kicker">Interactive Assessment Platform</p>
+            <h1>Quiz Statistics</h1>
+            <p class="hero-subtext">
+              Track completed quiz performance from your saved attempts.
+            </p>
+          </div>
+          <div class="hero-user-controls">
+            <span id="current-user" class="user-chip"></span>
+            <button id="back-to-quiz-btn" class="btn btn-secondary" type="button">
+              Back to Quiz
+            </button>
+            <button id="history-btn" class="btn btn-secondary" type="button">
+              Quiz History
+            </button>
+            <button id="achievements-btn" class="btn btn-secondary" type="button">
+              Achievements
+            </button>
+            <button id="logout-btn" class="btn btn-secondary" type="button">
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel" aria-labelledby="statistics-title">
+        <div class="panel-head">
+          <h2 id="statistics-title">Performance Overview</h2>
+          <p>Automatically calculated from all completed quizzes.</p>
+        </div>
+        <div class="statistics-card-grid">
+          <article class="statistics-card">
+            <div class="card-body">
+              <p class="card-title">Total Quizzes Played</p>
+              <p id="total-quizzes-played" class="statistics-value">0</p>
+            </div>
+          </article>
+          <article class="statistics-card">
+            <div class="card-body">
+              <p class="card-title">Highest Score</p>
+              <p id="highest-score" class="statistics-value">0.00%</p>
+            </div>
+          </article>
+          <article class="statistics-card">
+            <div class="card-body">
+              <p class="card-title">Lowest Score</p>
+              <p id="lowest-score" class="statistics-value">0.00%</p>
+            </div>
+          </article>
+          <article class="statistics-card">
+            <div class="card-body">
+              <p class="card-title">Average Score</p>
+              <p id="average-score" class="statistics-value">0.00%</p>
+            </div>
+          </article>
+          <article class="statistics-card">
+            <div class="card-body">
+              <p class="card-title">Total Correct Answers</p>
+              <p id="total-correct-answers" class="statistics-value">0</p>
+            </div>
+          </article>
+          <article class="statistics-card">
+            <div class="card-body">
+              <p class="card-title">Total Wrong Answers</p>
+              <p id="total-wrong-answers" class="statistics-value">0</p>
+            </div>
+          </article>
+          <article class="statistics-card">
+            <div class="card-body">
+              <p class="card-title">Accuracy</p>
+              <p id="accuracy-percentage" class="statistics-value">0.00%</p>
+            </div>
+          </article>
+          <article class="statistics-card">
+            <div class="card-body">
+              <p class="card-title">Favorite Difficulty</p>
+              <p id="favorite-difficulty" class="statistics-value">Not available</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel statistics-charts-panel" aria-labelledby="charts-title">
+        <div class="panel-head">
+          <h2 id="charts-title">Performance Charts</h2>
+          <p>See your recent scores and most selected difficulty levels.</p>
+        </div>
+        <p id="statistics-empty-message" class="statistics-empty-message" hidden>
+          No completed quizzes yet.
+        </p>
+        <div class="chart-grid">
+          <article class="chart-card">
+            <h3>Quiz Scores</h3>
+            <p>Percentage earned in the 12 most recent attempts.</p>
+            <div class="chart-canvas-wrap">
+              <canvas id="score-chart" aria-label="Quiz score chart"></canvas>
+            </div>
+          </article>
+          <article class="chart-card">
+            <h3>Difficulty Distribution</h3>
+            <p>How often each difficulty level has been selected.</p>
+            <div class="chart-canvas-wrap">
+              <canvas id="difficulty-chart" aria-label="Difficulty distribution chart"></canvas>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script src="auth.js"></script>
+    <script src="statistics.js"></script>
+  </body>
+</html>

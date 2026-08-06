@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online Leaderboard - Quiz Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-grid"></div>
+
+    <main class="app-shell">
+      <header class="hero">
+        <div class="hero-head">
+          <div>
+            <p class="hero-kicker">Real-time Global Rankings</p>
+            <h1>🏆 Online Leaderboard</h1>
+            <p class="hero-subtext">
+              View top candidate performances, search players, filter by difficulty, and inspect live rankings.
+            </p>
+          </div>
+          <div class="hero-user-controls">
+            <span id="current-user-badge" class="user-chip"></span>
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+              🏠 Home / Quiz
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='multiplayer.html'">
+              🎮 Multiplayer
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='history.html'">
+              📜 History
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='statistics.html'">
+              📊 Statistics
+            </button>
+            <button id="logout-btn" class="btn btn-secondary" type="button">
+              🚪 Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Top 3 Podium Highlights -->
+      <section id="podium-section" class="panel podium-panel">
+        <h2 class="podium-title">🌟 Top Performers</h2>
+        <div id="podium-cards" class="podium-grid">
+          <!-- Populated dynamically by leaderboard.js -->
+        </div>
+      </section>
+
+      <!-- Full Leaderboard Table Section -->
+      <section class="panel leaderboard-panel">
+        <div class="panel-head leaderboard-head">
+          <div>
+            <h2>Global Player Standings (Top 100)</h2>
+            <p>Filtered and sorted dynamically.</p>
+          </div>
+        </div>
+
+        <!-- Filters & Search Toolbar -->
+        <div class="leaderboard-toolbar">
+          <div class="toolbar-group">
+            <label for="search-player">🔍 Search Player</label>
+            <input
+              type="text"
+              id="search-player"
+              placeholder="Enter candidate name or roll no..."
+              class="toolbar-input"
+            />
+          </div>
+
+          <div class="toolbar-group">
+            <label for="filter-difficulty">🎯 Difficulty</label>
+            <select id="filter-difficulty" class="toolbar-select">
+              <option value="All">All Difficulties</option>
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+          </div>
+
+          <div class="toolbar-group">
+            <label for="sort-by">⇅ Sort By</label>
+            <select id="sort-by" class="toolbar-select">
+              <option value="score">Highest Score</option>
+              <option value="percentage">Highest Percentage</option>
+              <option value="time">Fastest Time</option>
+              <option value="newest">Newest</option>
+            </select>
+          </div>
+
+          <div class="toolbar-group align-end">
+            <button id="refresh-btn" class="btn btn-secondary" type="button">
+              🔄 Refresh
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>🏆 Rank</th>
+                <th>👤 Player Name</th>
+                <th>⭐ Score</th>
+                <th>📈 Percentage</th>
+                <th>🎯 Difficulty</th>
+                <th>🔥 Highest Streak</th>
+                <th>⏱ Time Taken</th>
+                <th>📅 Date</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-table-body">
+              <tr>
+                <td colspan="8" class="empty-row">Loading leaderboard data...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="auth.js"></script>
+    <script src="firebase.js"></script>
+    <script src="leaderboard.js"></script>
+  </body>
+</html>

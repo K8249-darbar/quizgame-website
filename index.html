@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Computer Engineering Quiz Arena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-grid"></div>
+
+    <main class="app-shell">
+      <!-- App Header -->
+      <header class="hero">
+        <div class="hero-head">
+          <div>
+            <p class="hero-kicker">Interactive Assessment Platform</p>
+            <h1>Computer Engineering Quiz Arena</h1>
+            <p class="hero-subtext">
+              Interactive assessment platform with real-time scoring, multiplayer, analytics, and customization.
+            </p>
+          </div>
+          <div class="hero-user-controls">
+            <span id="current-user" class="user-chip">Logged in</span>
+            <button id="logout-btn" class="btn btn-secondary btn-sm" type="button">
+              🚪 Logout
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Navigation Bar -->
+        <nav class="main-nav-bar" id="main-nav-bar" aria-label="Main Navigation">
+          <button type="button" class="nav-btn active" id="nav-setup-btn">
+            📝 Candidate Setup
+          </button>
+          <button type="button" class="nav-btn" id="nav-dashboard-btn">
+            📊 Admin Dashboard
+          </button>
+          <a href="leaderboard.html" class="nav-btn">
+            🏆 Leaderboard
+          </a>
+          <a href="profile.html" class="nav-btn">
+            👤 Profile
+          </a>
+          <a href="multiplayer.html" class="nav-btn">
+            🎮 Multiplayer
+          </a>
+          <a href="history.html" class="nav-btn">
+            📜 History
+          </a>
+          <a href="achievements.html" class="nav-btn">
+            🎖️ Achievements
+          </a>
+          <a href="statistics.html" class="nav-btn">
+            📈 Statistics
+          </a>
+          <button type="button" class="nav-btn" id="nav-settings-btn">
+            ⚙️ Settings
+          </button>
+        </nav>
+      </header>
+
+      <!-- Main Content Panels -->
+      <div class="content-wrapper">
+        <!-- Admin Dashboard Section -->
+        <section id="dashboard-section" class="panel hidden" aria-labelledby="admin-dashboard-title">
+          <div class="panel-head">
+            <h2 id="admin-dashboard-title">📊 Admin Dashboard</h2>
+            <p>Live overview of candidate activity and assessment performance.</p>
+          </div>
+          <div class="dashboard-card-grid">
+            <article class="card dashboard-card">
+              <div class="card-body">
+                <p class="card-title">Total Students</p>
+                <p id="dashboard-total-students" class="dashboard-value" aria-live="polite">0</p>
+              </div>
+            </article>
+            <article class="card dashboard-card">
+              <div class="card-body">
+                <p class="card-title">Total Subjects</p>
+                <p id="dashboard-total-subjects" class="dashboard-value" aria-live="polite">0</p>
+              </div>
+            </article>
+            <article class="card dashboard-card">
+              <div class="card-body">
+                <p class="card-title">Total Quiz Attempts</p>
+                <p id="dashboard-total-attempts" class="dashboard-value" aria-live="polite">0</p>
+              </div>
+            </article>
+            <article class="card dashboard-card">
+              <div class="card-body">
+                <p class="card-title">Average Score</p>
+                <p id="dashboard-average-score" class="dashboard-value" aria-live="polite">0.00%</p>
+              </div>
+            </article>
+            <article class="card dashboard-card">
+              <div class="card-body">
+                <p class="card-title">Highest Score</p>
+                <p id="dashboard-highest-score" class="dashboard-value" aria-live="polite">0.00%</p>
+              </div>
+            </article>
+            <article class="card dashboard-card">
+              <div class="card-body">
+                <p class="card-title">Pass Percentage</p>
+                <p id="dashboard-pass-percentage" class="dashboard-value" aria-live="polite">0.00%</p>
+              </div>
+            </article>
+            <article class="card dashboard-card dashboard-activity-card">
+              <div class="card-body">
+                <p class="card-title">Recent Activity</p>
+                <ul id="dashboard-recent-activity" class="dashboard-activity-list" aria-live="polite">
+                  <li class="dashboard-empty-state">No quiz attempts yet.</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- Candidate Setup Screen -->
+        <section id="setup-screen" class="panel">
+          <div class="panel-head">
+            <h2>📝 Candidate Setup</h2>
+            <p>Configure quiz details before starting your assessment.</p>
+          </div>
+          <form id="candidate-form" class="candidate-form">
+            <label>
+              Candidate Name
+              <input
+                type="text"
+                name="candidateName"
+                id="candidate-name-input"
+                placeholder="Enter full name"
+                required
+              />
+            </label>
+
+            <label>
+              Roll Number
+              <input
+                type="text"
+                name="rollNumber"
+                id="roll-number-input"
+                placeholder="e.g. CE-2026-014"
+                required
+              />
+            </label>
+
+            <label>
+              Category
+              <select name="category" id="category-select">
+                <option value="Computer Science">Computer Science</option>
+                <option value="Information Technology">Information Technology</option>
+                <option value="General Engineering">General Engineering</option>
+              </select>
+            </label>
+
+            <label>
+              Subject / Sub Category
+              <select name="subject" id="subject-select" required>
+                <option value="Mixed (All Subjects)">Mixed (All Subjects)</option>
+                <option value="Data Structures and Algorithms">
+                  Data Structures and Algorithms
+                </option>
+                <option value="Database Management Systems">
+                  Database Management Systems
+                </option>
+                <option value="Operating Systems">Operating Systems</option>
+                <option value="Computer Networks">Computer Networks</option>
+                <option value="Object Oriented Programming">
+                  Object Oriented Programming
+                </option>
+                <option value="Computer Organization and Architecture">
+                  Computer Organization and Architecture
+                </option>
+                <option value="Software Engineering">Software Engineering</option>
+                <option value="Web Technologies">Web Technologies</option>
+                <option value="Cybersecurity">Cybersecurity</option>
+              </select>
+            </label>
+
+            <label>
+              Quiz Mode
+              <select name="quizMode" id="quiz-mode-select">
+                <option value="Exam" selected>Exam Mode (Timed, Strict Evaluation)</option>
+                <option value="Practice">Practice Mode (Instant Feedback, Pause &amp; Unlimited Hints)</option>
+              </select>
+            </label>
+
+            <label class="checkbox-label">
+              <input type="checkbox" name="negativeMarking" id="negative-marking-checkbox" />
+              <span>Enable Negative Marking (-0.25 for incorrect answer)</span>
+            </label>
+
+            <label>
+              Difficulty
+              <select name="difficulty" id="difficulty-select" required>
+                <option value="Easy">Easy</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+            </label>
+
+            <label>
+              Number of Questions
+              <select name="questionCount" id="question-count-select" required>
+                <option value="unlimited" selected>∞ Unlimited Questions</option>
+                <option value="5">5 Questions</option>
+                <option value="10">10 Questions</option>
+                <option value="15">15 Questions</option>
+                <option value="25">25 Questions</option>
+                <option value="50">50 Questions</option>
+                <option value="100">100 Questions</option>
+              </select>
+            </label>
+
+            <label>
+              Quiz Duration (Minutes)
+              <input
+                type="number"
+                min="1"
+                max="90"
+                value="8"
+                name="duration"
+                id="duration-input"
+                required
+              />
+            </label>
+
+            <p id="setup-message" class="form-message"></p>
+
+            <button type="submit" class="btn btn-primary btn-lg">🚀 Start Quiz</button>
+          </form>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings-section" class="panel hidden">
+          <div class="panel-head">
+            <h2>⚙️ Quiz Arena Settings</h2>
+            <p>Customize themes, audio feedback, default quiz configurations, and data management.</p>
+          </div>
+
+          <form id="settings-form" class="settings-grid-form">
+            <!-- Theme Settings -->
+            <fieldset class="settings-card">
+              <legend>🎨 Theme &amp; Visuals</legend>
+              <div class="form-group">
+                <label for="setting-theme-mode">Color Theme</label>
+                <select id="setting-theme-mode" class="input-field">
+                  <option value="light" selected>Light Modern Teal (Default)</option>
+                  <option value="dark">Dark Luxury Canvas</option>
+                  <option value="contrast">High Contrast Mode</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="setting-font-size">Font Density</label>
+                <select id="setting-font-size" class="input-field">
+                  <option value="normal" selected>Standard Comfort</option>
+                  <option value="compact">Compact Dense</option>
+                  <option value="large">Large Accessibility</option>
+                </select>
+              </div>
+            </fieldset>
+
+            <!-- Audio Settings -->
+            <fieldset class="settings-card">
+              <legend>🔊 Audio &amp; Sound Effects</legend>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="setting-sound-effects" checked />
+                  <span>Enable Interactive Sound Effects (Chimes &amp; Clicks)</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label for="setting-sound-volume">Master Volume (<span id="volume-val-display">80</span>%)</label>
+                <input type="range" id="setting-sound-volume" min="0" max="100" value="80" class="range-slider" />
+              </div>
+            </fieldset>
+
+            <!-- Default Quiz Settings -->
+            <fieldset class="settings-card">
+              <legend>⏱️ Quiz &amp; Timer Defaults</legend>
+              <div class="form-group">
+                <label for="setting-default-questions">Default Question Count</label>
+                <select id="setting-default-questions" class="input-field">
+                  <option value="unlimited" selected>∞ Unlimited Questions</option>
+                  <option value="5">5 Questions</option>
+                  <option value="10">10 Questions</option>
+                  <option value="15">15 Questions</option>
+                  <option value="25">25 Questions</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="setting-default-duration">Default Quiz Duration (Minutes)</label>
+                <input type="number" id="setting-default-duration" min="1" max="90" value="8" class="input-field" />
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="setting-negative-marking" />
+                  <span>Enable Negative Marking (-0.25) by Default</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="setting-auto-advance" checked />
+                  <span>Auto-advance to Next Question on Answer Selection</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Alerts & Data -->
+            <fieldset class="settings-card">
+              <legend>💾 Backup &amp; System Data</legend>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="setting-achievement-popups" checked />
+                  <span>Show Unlocked Achievement Popups</span>
+                </label>
+              </div>
+              <div class="settings-action-buttons">
+                <button type="button" id="export-all-data-btn" class="btn btn-secondary w-full">
+                  📥 Export All Quiz Data (JSON)
+                </button>
+                <button type="button" id="reset-all-data-btn" class="btn btn-danger w-full">
+                  ⚠️ Reset &amp; Clear Local Storage
+                </button>
+              </div>
+            </fieldset>
+
+            <div class="settings-save-row">
+              <p id="settings-save-msg" class="form-message"></p>
+              <button type="submit" class="btn btn-primary btn-lg">💾 Save Settings</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Active Quiz Screen -->
+        <section id="quiz-screen" class="panel hidden" aria-live="polite">
+          <div class="quiz-topbar">
+            <div id="candidate-pill" class="candidate-pill"></div>
+            <div id="streak-display" class="streak-display" aria-live="polite">
+              <span>Streak <strong id="current-streak">0</strong></span>
+              <span>Best <strong id="highest-streak">0</strong></span>
+              <span id="streak-reward" class="streak-reward">Keep going</span>
+            </div>
+            <div class="quiz-utility-controls">
+              <button id="bookmark-btn" type="button" class="btn btn-secondary btn-sm" title="Bookmark Question">🔖 Bookmark</button>
+              <button id="pause-btn" type="button" class="btn btn-secondary btn-sm" title="Pause Quiz">⏸️ Pause</button>
+              <div id="timer-display" class="timer-display">00:00</div>
+            </div>
+          </div>
+
+          <div class="progress-row">
+            <div class="progress-track">
+              <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <p id="progress-stats">Answered 0/0</p>
+          </div>
+
+          <div class="question-block">
+            <p id="question-meta" class="question-meta"></p>
+            
+            <div id="question-image-container" class="question-media-container hidden">
+              <img id="question-image" src="" alt="Question visual material" />
+            </div>
+
+            <div id="question-audio-container" class="question-audio-container hidden">
+              <div class="audio-player-wrapper">
+                <span class="audio-badge">🎵 Audio Question</span>
+                <audio id="question-audio" preload="auto"></audio>
+                <div class="audio-controls">
+                  <button id="audio-play-btn" type="button" class="btn btn-secondary btn-sm">▶️ Play</button>
+                  <button id="audio-pause-btn" type="button" class="btn btn-secondary btn-sm">⏸️ Pause</button>
+                  <button id="audio-replay-btn" type="button" class="btn btn-secondary btn-sm">🔄 Replay</button>
+                </div>
+              </div>
+            </div>
+
+            <h2 id="question-text"></h2>
+            <div id="options-list" class="options-list"></div>
+          </div>
+
+          <div id="question-palette" class="question-palette"></div>
+
+          <div class="quiz-actions">
+            <button id="prev-btn" class="btn btn-secondary" type="button">Previous</button>
+            <button id="skip-btn" class="btn btn-secondary" type="button">⏭️ Skip</button>
+            <button id="next-btn" class="btn btn-secondary" type="button">Next</button>
+            <button id="submit-btn" class="btn btn-primary" type="button">Submit Quiz</button>
+          </div>
+        </section>
+
+        <!-- Quiz Result Screen (Overlay Slide) -->
+        <section id="result-screen" class="app-slide panel hidden">
+          <div class="panel-head">
+            <h2>🎯 Result Summary</h2>
+            <p>Evaluation completed successfully.</p>
+          </div>
+          <div id="result-summary" class="result-summary"></div>
+          <div class="result-actions">
+            <button id="review-incorrect-btn" class="btn btn-secondary" type="button">
+              ❌ Review Incorrect Answers
+            </button>
+            <button id="next-candidate-btn" class="btn btn-primary" type="button">
+              Next Candidate / Restart
+            </button>
+          </div>
+          
+          <div id="review-incorrect-section" class="review-section hidden margin-top-1rem">
+            <h3>Review Incorrect / Skipped Questions</h3>
+            <div id="incorrect-list" class="incorrect-list"></div>
+          </div>
+        </section>
+      </div>
+
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script src="auth.js"></script>
+    <script src="questions.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+

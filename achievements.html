@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Achievements | Computer Engineering Quiz Arena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-grid"></div>
+
+    <main class="app-shell">
+      <header class="hero">
+        <div class="hero-head">
+          <div>
+            <p class="hero-kicker">Interactive Assessment Platform</p>
+            <h1>Achievements</h1>
+            <p class="hero-subtext">
+              Complete quizzes and build your collection of achievement badges.
+            </p>
+          </div>
+          <div class="hero-user-controls">
+            <span id="current-user" class="user-chip"></span>
+            <button id="back-to-quiz-btn" class="btn btn-secondary" type="button">
+              Back to Quiz
+            </button>
+            <button id="history-btn" class="btn btn-secondary" type="button">
+              Quiz History
+            </button>
+            <button id="statistics-btn" class="btn btn-secondary" type="button">
+              Statistics
+            </button>
+            <button id="logout-btn" class="btn btn-secondary" type="button">
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel" aria-labelledby="achievements-title">
+        <div class="panel-head">
+          <h2 id="achievements-title">Badge Collection</h2>
+          <p>Unlocked badges remain saved on this device.</p>
+        </div>
+        <p id="achievement-summary" class="achievement-summary"></p>
+        <div id="achievement-grid" class="achievement-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="auth.js"></script>
+    <script src="achievements.js"></script>
+  </body>
+</html>

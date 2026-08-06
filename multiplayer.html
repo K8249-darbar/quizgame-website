@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiplayer Quiz Arena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-grid"></div>
+
+    <main class="app-shell">
+      <header class="hero">
+        <div class="hero-head">
+          <div>
+            <p class="hero-kicker">Live Competitive Arena</p>
+            <h1>🎮 Multiplayer Quiz Arena</h1>
+            <p class="hero-subtext">
+              Create a custom room or join with a room code. Compete live against players anywhere with synchronized timers and instant score updates!
+            </p>
+          </div>
+          <div class="hero-user-controls">
+            <span id="mp-user-badge" class="user-chip"></span>
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+              🏠 Home / Single Player
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='leaderboard.html'">
+              🏆 Leaderboard
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='history.html'">
+              📜 History
+            </button>
+            <button id="logout-btn" class="btn btn-secondary" type="button">
+              🚪 Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Step 1: Room Creation & Joining Setup Panel -->
+      <section id="mp-setup-panel" class="panel">
+        <div class="panel-head">
+          <h2>Join or Create Room</h2>
+          <p>Choose an action to enter the multiplayer lobby.</p>
+        </div>
+
+        <div class="mp-mode-grid">
+          <!-- Create Room Form -->
+          <div class="card mp-card">
+            <div class="card-body">
+              <h3>👑 Host a New Room</h3>
+              <p>Create a room and invite your friends (Up to 10 players).</p>
+              
+              <div class="form-group">
+                <label for="host-name-input">Your Name</label>
+                <input type="text" id="host-name-input" placeholder="e.g. Alex" class="input-field" />
+              </div>
+
+              <div class="form-group">
+                <label for="mp-subject-select">Quiz Subject</label>
+                <select id="mp-subject-select" class="input-field">
+                  <option value="Mixed (All Subjects)">Mixed (All Subjects)</option>
+                  <option value="Data Structures and Algorithms">Data Structures and Algorithms</option>
+                  <option value="Database Management Systems">Database Management Systems</option>
+                  <option value="Operating Systems">Operating Systems</option>
+                  <option value="Computer Networks">Computer Networks</option>
+                  <option value="Web Technologies">Web Technologies</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="mp-difficulty-select">Difficulty</label>
+                <select id="mp-difficulty-select" class="input-field">
+                  <option value="Easy">Easy</option>
+                  <option value="Medium" selected>Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+
+              <button id="create-room-btn" type="button" class="btn btn-primary w-full">
+                ✨ Create Room
+              </button>
+            </div>
+          </div>
+
+          <!-- Join Room Form -->
+          <div class="card mp-card">
+            <div class="card-body">
+              <h3>🚀 Join Existing Room</h3>
+              <p>Enter the 6-character room code provided by the room host.</p>
+
+              <div class="form-group">
+                <label for="player-name-input">Your Name</label>
+                <input type="text" id="player-name-input" placeholder="e.g. Sam" class="input-field" />
+              </div>
+
+              <div class="form-group">
+                <label for="room-code-input">Room Code</label>
+                <input type="text" id="room-code-input" placeholder="e.g. 784A9B" class="input-field uppercase-text" maxlength="6" />
+              </div>
+
+              <button id="join-room-btn" type="button" class="btn btn-secondary w-full">
+                🔑 Join Room
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 2: Waiting Lobby Screen -->
+      <section id="mp-lobby-panel" class="panel hidden">
+        <div class="panel-head lobby-head">
+          <div>
+            <h2>Room Lobby: <span id="lobby-room-code" class="code-highlight">------</span></h2>
+            <p id="lobby-subject-info">Subject: Mixed | Difficulty: Medium</p>
+          </div>
+          <button id="copy-code-btn" type="button" class="btn btn-secondary">
+            📋 Copy Code
+          </button>
+        </div>
+
+        <div class="lobby-content">
+          <h3>Joined Players (<span id="player-count">0</span>/10)</h3>
+          <div id="lobby-players-grid" class="players-avatar-grid">
+            <!-- Populated dynamically -->
+          </div>
+
+          <div id="host-controls" class="host-controls-box hidden">
+            <p class="host-badge">👑 You are the Host</p>
+            <button id="start-multiplayer-game-btn" type="button" class="btn btn-primary btn-lg">
+              🚀 Start Game Now
+            </button>
+          </div>
+
+          <div id="waiting-host-notice" class="waiting-notice">
+            <div class="spinner"></div>
+            <p>Waiting for the host to start the game...</p>
+          </div>
+
+          <button id="leave-room-btn" type="button" class="btn btn-danger btn-sm">
+            🚪 Leave Room
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 3: Synchronized Live Multiplayer Game Screen -->
+      <section id="mp-game-panel" class="panel hidden">
+        <div class="quiz-topbar">
+          <div class="candidate-pill">🎮 Room Code: <strong id="game-room-code">------</strong></div>
+          <div id="mp-timer-display" class="timer-display">00:00</div>
+        </div>
+
+        <div class="progress-row">
+          <div class="progress-track">
+            <div id="mp-progress-bar" class="progress-bar"></div>
+          </div>
+          <p id="mp-progress-stats">Question 1 of 5</p>
+        </div>
+
+        <div class="mp-arena-grid">
+          <!-- Question Area -->
+          <div class="question-block mp-q-block">
+            <p id="mp-question-meta" class="question-meta"></p>
+            
+            <div id="mp-question-image-container" class="question-media-container hidden">
+              <img id="mp-question-image" src="" alt="Question image" />
+            </div>
+
+            <div id="mp-question-audio-container" class="question-audio-container hidden">
+              <div class="audio-player-wrapper">
+                <span class="audio-badge">🎵 Audio Question</span>
+                <audio id="mp-question-audio" preload="auto"></audio>
+                <div class="audio-controls">
+                  <button id="mp-audio-play" type="button" class="btn btn-secondary btn-sm">▶️ Play</button>
+                  <button id="mp-audio-pause" type="button" class="btn btn-secondary btn-sm">⏸️ Pause</button>
+                </div>
+              </div>
+            </div>
+
+            <h2 id="mp-question-text"></h2>
+            <div id="mp-options-list" class="options-list"></div>
+          </div>
+
+          <!-- Live Scoreboard -->
+          <div class="card live-scoreboard-card">
+            <div class="card-body">
+              <h3>⚡ Live Scoreboard</h3>
+              <div id="live-scores-list" class="live-scores-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-actions">
+          <button id="mp-submit-btn" class="btn btn-primary" type="button">
+            Submit Answer & Complete
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 4: Winner Screen & Podium -->
+      <section id="mp-winner-panel" class="panel hidden">
+        <div class="panel-head text-center">
+          <h1>🎉 Match Completed!</h1>
+          <p>Congratulations to the winners!</p>
+        </div>
+
+        <div id="mp-podium-cards" class="podium-grid">
+          <!-- Dynamically populated winner cards -->
+        </div>
+
+        <div class="table-wrap margin-top-1rem">
+          <h3>Full Match Scoreboard</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Score</th>
+                <th>Percentage</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="mp-final-scoreboard-body">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="margin-top-1rem text-center">
+          <button class="btn btn-primary" onclick="window.location.reload()">
+            🔄 Return to Lobby Setup
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="auth.js"></script>
+    <script src="questions.js"></script>
+    <script src="multiplayer.js"></script>
+  </body>
+</html>

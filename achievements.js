@@ -1,0 +1,370 @@
+(() => {
+const ACHIEVEMENT_STORAGE_KEY = "ce_quiz_achievements_v1";
+const ACHIEVEMENT_RESULT_STORAGE_KEY = "ce_quiz_results_v1";
+const ACHIEVEMENT_LOGIN_PAGE = "login.html";
+const achievementAuthManager = window.AuthManager;
+
+const ACHIEVEMENTS = [
+  {
+    id: "first-quiz",
+    name: "First Quiz",
+    description: "Complete your first quiz.",
+    icon: "🏁"
+  },
+  {
+    id: "quiz-beginner",
+    name: "Quiz Beginner",
+    description: "Complete 3 quizzes.",
+    icon: "🌱"
+  },
+  {
+    id: "quiz-expert",
+    name: "Quiz Expert",
+    description: "Complete 5 quizzes.",
+    icon: "🎯"
+  },
+  {
+    id: "perfect-score",
+    name: "Perfect Score",
+    description: "Score 100% in a quiz.",
+    icon: "💯"
+  },
+  {
+    id: "questions-completed",
+    name: "100 Questions Completed",
+    description: "Complete 100 quiz questions.",
+    icon: "📚"
+  },
+  {
+    id: "quizzes-completed",
+    name: "10 Quizzes Completed",
+    description: "Complete 10 quizzes.",
+    icon: "🔟"
+  },
+  {
+    id: "correct-answers",
+    name: "50 Correct Answers",
+    description: "Answer 50 questions correctly.",
+    icon: "✅"
+  },
+  {
+    id: "fast-thinker",
+    name: "Fast Thinker",
+    description: "Score at least 60% in 60 seconds or less.",
+    icon: "⚡"
+  },
+  {
+    id: "quiz-master",
+    name: "Quiz Master",
+    description: "Unlock every other achievement.",
+    icon: "🏆"
+  }
+];
+
+if (!achievementAuthManager || !achievementAuthManager.isAuthenticated()) {
+  window.location.replace(ACHIEVEMENT_LOGIN_PAGE);
+}
+
+const achievementGrid = document.getElementById("achievement-grid");
+const achievementSummary = document.getElementById("achievement-summary");
+const achievementCurrentUser = document.getElementById("current-user");
+const backToQuizBtn = document.getElementById("back-to-quiz-btn");
+const historyBtn = document.getElementById("history-btn");
+const statisticsBtn = document.getElementById("statistics-btn");
+const achievementLogoutBtn = document.getElementById("logout-btn");
+const achievementPopupQueue = [];
+let isAchievementPopupVisible = false;
+
+function getStoredResults() {
+  try {
+    const results = JSON.parse(
+      localStorage.getItem(ACHIEVEMENT_RESULT_STORAGE_KEY) || "[]"
+    );
+    return Array.isArray(results) ? results : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function getAchievementState() {
+  try {
+    const storedState = JSON.parse(
+      localStorage.getItem(ACHIEVEMENT_STORAGE_KEY) || "{}"
+    );
+    const unlockedIds = Array.isArray(storedState)
+      ? storedState
+      : storedState.unlockedIds;
+    const validAchievementIds = new Set(
+      ACHIEVEMENTS.map((achievement) => achievement.id)
+    );
+
+    return {
+      unlockedIds: Array.isArray(unlockedIds)
+        ? unlockedIds.filter((id) => validAchievementIds.has(id))
+        : [],
+      unlockedAt:
+        storedState && !Array.isArray(storedState) && storedState.unlockedAt
+          ? storedState.unlockedAt
+          : {}
+    };
+  } catch (error) {
+    return { unlockedIds: [], unlockedAt: {} };
+  }
+}
+
+function setAchievementState(state) {
+  localStorage.setItem(ACHIEVEMENT_STORAGE_KEY, JSON.stringify(state));
+  window.dispatchEvent(new CustomEvent("quiz:achievements-updated"));
+}
+
+function getNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function getAchievementMetrics(results) {
+  const totalQuestions = results.reduce(
+    (total, result) => total + getNumber(result.totalQuestions),
+    0
+  );
+  const totalCorrect = results.reduce(
+    (total, result) => total + getNumber(result.correct),
+    0
+  );
+  const hasPerfectScore = results.some(
+    (result) =>
+      getNumber(result.totalQuestions) > 0 &&
+      getNumber(result.correct) === getNumber(result.totalQuestions)
+  );
+  const hasFastQuiz = results.some(
+    (result) =>
+      getNumber(result.timeUsedSeconds) <= 60 &&
+      getNumber(result.percentage) >= 60
+  );
+
+  return {
+    totalQuizzes: results.length,
+    totalQuestions,
+    totalCorrect,
+    hasPerfectScore,
+    hasFastQuiz
+  };
+}
+
+function getEligibleAchievementIds(results) {
+  const metrics = getAchievementMetrics(results);
+  const eligibleIds = new Set();
+
+  if (metrics.totalQuizzes >= 1) eligibleIds.add("first-quiz");
+  if (metrics.totalQuizzes >= 3) eligibleIds.add("quiz-beginner");
+  if (metrics.totalQuizzes >= 5) eligibleIds.add("quiz-expert");
+  if (metrics.hasPerfectScore) eligibleIds.add("perfect-score");
+  if (metrics.totalQuestions >= 100) eligibleIds.add("questions-completed");
+  if (metrics.totalQuizzes >= 10) eligibleIds.add("quizzes-completed");
+  if (metrics.totalCorrect >= 50) eligibleIds.add("correct-answers");
+  if (metrics.hasFastQuiz) eligibleIds.add("fast-thinker");
+
+  const requiredBadgeIds = ACHIEVEMENTS.filter(
+    (achievement) => achievement.id !== "quiz-master"
+  ).map((achievement) => achievement.id);
+  if (requiredBadgeIds.every((achievementId) => eligibleIds.has(achievementId))) {
+    eligibleIds.add("quiz-master");
+  }
+
+  return eligibleIds;
+}
+
+function synchronizeAchievements(showPopup) {
+  const achievementState = getAchievementState();
+  const unlockedIdSet = new Set(achievementState.unlockedIds);
+  const eligibleIds = getEligibleAchievementIds(getStoredResults());
+  const newlyUnlocked = ACHIEVEMENTS.filter(
+    (achievement) =>
+      eligibleIds.has(achievement.id) && !unlockedIdSet.has(achievement.id)
+  );
+
+  if (!newlyUnlocked.length) {
+    return [];
+  }
+
+  const unlockedAt = { ...achievementState.unlockedAt };
+  newlyUnlocked.forEach((achievement) => {
+    unlockedIdSet.add(achievement.id);
+    unlockedAt[achievement.id] = new Date().toISOString();
+  });
+  setAchievementState({
+    unlockedIds: [...unlockedIdSet],
+    unlockedAt
+  });
+
+  if (showPopup) {
+    showUnlockedBadgePopup(newlyUnlocked);
+  }
+
+  return newlyUnlocked;
+}
+
+function createAchievementPopup() {
+  const popup = document.createElement("div");
+  const icon = document.createElement("span");
+  const content = document.createElement("div");
+  const label = document.createElement("p");
+  const name = document.createElement("strong");
+
+  popup.id = "achievement-popup";
+  popup.className = "achievement-popup";
+  popup.setAttribute("role", "status");
+  popup.setAttribute("aria-live", "polite");
+  icon.className = "achievement-popup-icon";
+  label.textContent = "Badge unlocked";
+  content.append(label, name);
+  popup.append(icon, content);
+  document.body.appendChild(popup);
+
+  return { popup, icon, name };
+}
+
+function showUnlockedBadgePopup(badges) {
+  achievementPopupQueue.push(...badges);
+  showNextAchievementPopup();
+}
+
+function showNextAchievementPopup() {
+  if (isAchievementPopupVisible || !achievementPopupQueue.length) {
+    return;
+  }
+
+  const badge = achievementPopupQueue.shift();
+  const popupParts = createAchievementPopup();
+  popupParts.icon.textContent = badge.icon;
+  popupParts.name.textContent = badge.name;
+  isAchievementPopupVisible = true;
+
+  requestAnimationFrame(() => {
+    popupParts.popup.classList.add("visible");
+  });
+
+  setTimeout(() => {
+    popupParts.popup.classList.remove("visible");
+    setTimeout(() => {
+      popupParts.popup.remove();
+      isAchievementPopupVisible = false;
+      showNextAchievementPopup();
+    }, 200);
+  }, 3200);
+}
+
+function renderAchievementsPage() {
+  if (!achievementGrid || !achievementSummary) {
+    return;
+  }
+
+  const unlockedIds = new Set(getAchievementState().unlockedIds);
+  achievementSummary.textContent = `${unlockedIds.size} of ${ACHIEVEMENTS.length} badges unlocked.`;
+  achievementGrid.innerHTML = "";
+
+  ACHIEVEMENTS.forEach((achievement) => {
+    const isUnlocked = unlockedIds.has(achievement.id);
+    const card = document.createElement("article");
+    const icon = document.createElement("div");
+    const title = document.createElement("h3");
+    const description = document.createElement("p");
+    const status = document.createElement("span");
+
+    card.className = `achievement-card ${isUnlocked ? "unlocked" : "locked"}`;
+    icon.className = "achievement-icon";
+    icon.textContent = isUnlocked ? achievement.icon : "🔒";
+    title.textContent = achievement.name;
+    description.textContent = achievement.description;
+    status.className = "achievement-status";
+    status.textContent = isUnlocked ? "Unlocked" : "Locked";
+    card.append(icon, title, description, status);
+    achievementGrid.appendChild(card);
+  });
+}
+
+function setCurrentUserBadge() {
+  if (!achievementCurrentUser || !achievementAuthManager) {
+    return;
+  }
+
+  achievementCurrentUser.style.cursor = "pointer";
+  achievementCurrentUser.title = "Click to view Profile";
+  achievementCurrentUser.onclick = () => {
+    window.location.href = "profile.html";
+  };
+
+  const session = achievementAuthManager.getSession();
+  if (!session) {
+    achievementCurrentUser.innerHTML = `<span class="user-chip-guest">Guest</span>`;
+    return;
+  }
+
+  const name = session.fullName || session.username || "User";
+  const avatar = session.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D5C4E&color=fff&bold=true`;
+
+  achievementCurrentUser.innerHTML = `
+    <span class="user-badge-flex">
+      <img src="${avatar}" class="user-header-avatar" alt="${name}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D5C4E&color=fff&bold=true';" />
+      <span class="user-name">${name}</span>
+    </span>
+  `;
+}
+
+function handleLogout() {
+  if (!confirm("Do you want to logout from the quiz portal?")) {
+    return;
+  }
+
+  achievementAuthManager.clearSession();
+  window.location.href = ACHIEVEMENT_LOGIN_PAGE;
+}
+
+window.renderAchievementsPage = renderAchievementsPage;
+
+if (backToQuizBtn) {
+  backToQuizBtn.addEventListener("click", () => {
+    if (typeof window.switchSlide === "function") {
+      window.switchSlide(1, "left");
+    }
+  });
+}
+if (historyBtn) {
+  historyBtn.addEventListener("click", () => {
+    if (typeof window.switchSlide === "function") {
+      window.switchSlide(5, "right");
+    }
+  });
+}
+if (statisticsBtn) {
+  statisticsBtn.addEventListener("click", () => {
+    if (typeof window.switchSlide === "function") {
+      window.switchSlide(7, "right");
+    }
+  });
+}
+if (achievementLogoutBtn) {
+  achievementLogoutBtn.addEventListener("click", handleLogout);
+}
+
+window.addEventListener("quiz:results-updated", () => {
+  synchronizeAchievements(true);
+  renderAchievementsPage();
+});
+window.addEventListener("quiz:achievements-updated", renderAchievementsPage);
+window.addEventListener("storage", (event) => {
+  if (event.key === ACHIEVEMENT_RESULT_STORAGE_KEY) {
+    synchronizeAchievements(false);
+  }
+  if (
+    event.key === ACHIEVEMENT_RESULT_STORAGE_KEY ||
+    event.key === ACHIEVEMENT_STORAGE_KEY
+  ) {
+    renderAchievementsPage();
+  }
+});
+
+synchronizeAchievements(false);
+setCurrentUserBadge();
+renderAchievementsPage();
+})();
