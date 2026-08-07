@@ -1,4 +1,19 @@
 (() => {
+  // Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyBepB2uuAPE1qYuQSmWJhnD9VciijoFNfU",
+  authDomain: "quizgame-db-4d162.firebaseapp.com",
+  projectId: "quizgame-db-4d162",
+  storageBucket: "quizgame-db-4d162.firebasestorage.app",
+  messagingSenderId: "503657232527",
+  appId: "1:503657232527:web:35d1318e6e49d4be0e58fa",
+  measurementId: "G-J8E65ZTB34"
+};
+
+if (typeof firebase !== "undefined" && !firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = typeof firebase !== "undefined" ? firebase.firestore() : null;
 const AUTH_USERS_KEY = "ce_quiz_users_v2";
 const AUTH_SESSION_KEY = "ce_quiz_session_v2";
 
@@ -315,7 +330,20 @@ function googleLogin(customData = {}) {
     if (customData.avatarUrl) existingUser.avatarUrl = customData.avatarUrl;
   }
   saveUsers(users);
-
+// Save to Firebase Firestore globally
+  if (db) {
+    try {
+      db.collection("users").doc(googleUser.email).set({
+        fullName: googleUser.fullName,
+        username: googleUser.username,
+        email: googleUser.email,
+        avatarUrl: googleUser.avatarUrl,
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    } catch (err) {
+      console.warn("Firestore save error:", err);
+    }
+  }
   setSession(googleUser, true);
   return { ok: true, user: googleUser };
 }

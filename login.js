@@ -58,12 +58,6 @@ const googleBtn = document.getElementById("google-login-btn");
 const googleModal = document.getElementById("google-modal");
 const closeGoogleModal = document.getElementById("close-google-modal");
 const googleForm = document.getElementById("google-signin-form");
-<<<<<<< HEAD
-
-if (googleBtn && googleModal) {
-  googleBtn.addEventListener("click", () => {
-    googleModal.classList.remove("hidden");
-=======
 const googleMessage = document.getElementById("google-message");
 
 if (googleBtn && googleModal) {
@@ -71,7 +65,6 @@ if (googleBtn && googleModal) {
     if (googleMessage) googleMessage.textContent = "";
     googleModal.classList.remove("hidden");
     initOfficialGoogleButton();
->>>>>>> b9ab956 (Initial commit)
   });
 }
 
@@ -81,18 +74,6 @@ if (closeGoogleModal && googleModal) {
   });
 }
 
-<<<<<<< HEAD
-if (googleForm) {
-  googleForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const fullName = document.getElementById("google-fullname").value.trim();
-    const email = document.getElementById("google-email").value.trim();
-    
-    if (window.AuthManager) {
-      const res = window.AuthManager.googleLogin({ fullName, email });
-      if (res.ok) {
-        window.location.href = "index.html";
-=======
 function initOfficialGoogleButton() {
   const container = document.getElementById("google-official-btn-container");
   if (!container) return;
@@ -144,14 +125,11 @@ if (googleForm) {
       } else if (googleMessage) {
         googleMessage.style.color = "#dc2626";
         googleMessage.textContent = res.message || "Failed to sign in with Google.";
->>>>>>> b9ab956 (Initial commit)
       }
     }
   });
 }
 
-<<<<<<< HEAD
-=======
 function handleCredentialResponse(response) {
   if (response && response.credential && window.AuthManager) {
     const res = window.AuthManager.googleLoginWithCredential(response.credential);
@@ -166,7 +144,6 @@ function handleCredentialResponse(response) {
 }
 window.handleCredentialResponse = handleCredentialResponse;
 
->>>>>>> b9ab956 (Initial commit)
 const guestBtn = document.getElementById("guest-login-btn");
 if (guestBtn) {
   guestBtn.addEventListener("click", () => {
